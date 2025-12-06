@@ -15,11 +15,8 @@ find_package(rclcpp_lifecycle REQUIRED)
 add_library(turret_hardware SHARED src/turret_hardware.cpp)
 target_include_directories(turret_hardware PUBLIC include)
 ament_target_dependencies(turret_hardware hardware_interface pluginlib rclcpp rclcpp_lifecycle)
-
-find_library(PIGPIO_LIBRARY NAMES pigpio REQUIRED)
-
 target_link_libraries(turret_hardware
-  ${PIGPIO_LIBRARY}
+  wiringPi
 )
 
 pluginlib_export_plugin_description_file(hardware_interface turret_hardware.xml)

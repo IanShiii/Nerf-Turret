@@ -1,8 +1,19 @@
 #pragma once
 
+#include "wiringPi.h"
+#include "softServo.h"
+#include "softPwm.h"
+
+#ifdef TRUE
+#undef TRUE
+#endif
+
+#ifdef FALSE
+#undef FALSE
+#endif
+
 #include "pluginlib/class_list_macros.hpp"
 #include "hardware_interface/system_interface.hpp"
-#include "pigpio.h"
 
 namespace turret_hardware {
     class TurretHardwareInterface : public hardware_interface::SystemInterface {
