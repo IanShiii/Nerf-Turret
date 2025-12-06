@@ -2,11 +2,38 @@ controller_manager:
   ros__parameters:
     update_rate: 50  # Hz
 
-    forward_position_controller:
+    pan_controller:
       type: forward_command_controller/ForwardCommandController
 
-forward_position_controller:
+    tilt_controller:
+      type: forward_command_controller/ForwardCommandController
+    
+    trigger_controller:
+      type: forward_command_controller/ForwardCommandController
+
+    flywheel_controller:
+      type: forward_command_controller/ForwardCommandController
+
+pan_controller:
   ros__parameters:
     joints:
       - pan_joint
     interface_name: angle
+
+tilt_controller:
+  ros__parameters:
+    joints:
+      - tilt_joint
+    interface_name: angle
+
+trigger_controller:
+  ros__parameters:
+    joints:
+      - trigger_joint
+    interface_name: position
+
+flywheel_controller:
+  ros__parameters:
+    joints:
+      - flywheel_joint
+    interface_name: velocity

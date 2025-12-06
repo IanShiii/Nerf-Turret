@@ -27,11 +27,50 @@ def generate_launch_description():
         parameters=[controllers_file]
     )
 
-    forward_position_controller_node = Node(
+    pan_controller_spawner = Node(
         package='controller_manager',
         executable='spawner',
         arguments=[
-            'forward_position_controller',
+            'pan_controller',
+            '--controller-manager-timeout',
+            '300',
+            '--controller-manager',
+            '/controller_manager',
+        ],
+        output='screen',
+    )
+
+    tilt_controller_spawner = Node(
+        package='controller_manager',
+        executable='spawner',
+        arguments=[
+            'tilt_controller',
+            '--controller-manager-timeout',
+            '300',
+            '--controller-manager',
+            '/controller_manager',
+        ],
+        output='screen',
+    )
+
+    trigger_controller_spawner = Node(
+        package='controller_manager',
+        executable='spawner',
+        arguments=[
+            'trigger_controller',
+            '--controller-manager-timeout',
+            '300',
+            '--controller-manager',
+            '/controller_manager',
+        ],
+        output='screen',
+    )
+
+    flywheel_controller_spawner = Node(
+        package='controller_manager',
+        executable='spawner',
+        arguments=[
+            'flywheel_controller',
             '--controller-manager-timeout',
             '300',
             '--controller-manager',
@@ -43,5 +82,8 @@ def generate_launch_description():
     return LaunchDescription([
         robot_state_publisher_node,
         ros2_controller_manager_node,
-        forward_position_controller_node
+        pan_controller_spawner,
+        tilt_controller_spawner,
+        trigger_controller_spawner,
+        flywheel_controller_spawner
     ])
