@@ -21,15 +21,16 @@ namespace turret_hardware {
             }
         }
 
+        pan_angle_ = 0.0;
+        tilt_angle_ = 0.0;
+        trigger_distance_ = 0.0;
+        flywheel_speed_ = 0.0;
+
         return hardware_interface::CallbackReturn::SUCCESS;
     }
 
     hardware_interface::CallbackReturn TurretHardwareInterface::on_configure([[maybe_unused]] const rclcpp_lifecycle::State & previous_state) {
         wiringPiSetupGpio();
-
-        pwmSetMode(PWM_MODE_MS);
-        pwmSetClock(192);
-        pwmSetRange(20000);
 
         pinMode(pan_servo_gpio_pin_, PWM_OUTPUT);
         pinMode(tilt_servo_gpio_pin_, PWM_OUTPUT);
@@ -38,6 +39,10 @@ namespace turret_hardware {
 
         pinMode(flywheel_in1_gpio_pin_, OUTPUT);
         pinMode(flywheel_in2_gpio_pin_, OUTPUT);
+
+        pwmSetMode(PWM_MODE_MS);
+        pwmSetClock(192);
+        pwmSetRange(2000);
         
         return hardware_interface::CallbackReturn::SUCCESS;
     }
@@ -91,17 +96,17 @@ namespace turret_hardware {
 
         digitalWrite(flywheel_in1_gpio_pin_, 1);
         digitalWrite(flywheel_in2_gpio_pin_, 0);
-        pwmWrite(flywheel_enable_gpio_pin_, 20000 * flywheel_speed_);
+        pwmWrite(flywheel_enable_gpio_pin_, 2000 * flywheel_speed_);
 
         return hardware_interface::return_type::OK;
     }
 
     unsigned int TurretHardwareInterface::angle_to_pwm(double angle) {
-        return static_cast<unsigned int>(500.0 + (angle / 180.0) * 2000.0);
+        return (unsigned int)(100 + (angle / 180.0) * 100);
     }
 
     unsigned int TurretHardwareInterface::distance_to_pwm(double distance) {
-        return static_cast<unsigned int>(500.0 + distance * 2000.0);
+        return (unsigned int)(100 + distance * 100);
     }
 }
 
