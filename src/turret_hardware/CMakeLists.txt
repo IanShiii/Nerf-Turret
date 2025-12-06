@@ -31,7 +31,7 @@ install(DIRECTORY include/
 )
 
 install(DIRECTORY config/
-  DESTINATION config
+  DESTINATION share/${PROJECT_NAME}/config
 )
 
 ament_package()
