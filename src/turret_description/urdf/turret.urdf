@@ -45,9 +45,8 @@
         </joint>
 
         <gpio name="flywheel">
-            <param name="in1_gpio_pin">0</param>
-            <param name="in2_gpio_pin">0</param>
-            <param name="enable_gpio_pin">0</param>
+            <param name="in1_gpio_pin">31</param>
+            <param name="in2_gpio_pin">37</param>
         </gpio>
     </ros2_control>
 </robot>

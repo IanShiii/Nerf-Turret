@@ -17,7 +17,6 @@ namespace turret_hardware {
             } else if (joint.name == "flywheel_joint") {
                 flywheel_in1_gpio_pin_ = std::stoi(joint.parameters.at("in1_gpio_pin"));
                 flywheel_in2_gpio_pin_ = std::stoi(joint.parameters.at("in2_gpio_pin"));
-                flywheel_enable_gpio_pin_ = std::stoi(joint.parameters.at("enable_gpio_pin"));
             }
         }
 
@@ -32,6 +31,10 @@ namespace turret_hardware {
     hardware_interface::CallbackReturn TurretHardwareInterface::on_configure([[maybe_unused]] const rclcpp_lifecycle::State & previous_state) {
         wiringPiSetupGpio();
 
+        pwmSetMode(PWM_MODE_MS);
+        pwmSetClock(192);
+        pwmSetRange(2000);
+
         pinMode(pan_servo_gpio_pin_, PWM_OUTPUT);
         pinMode(tilt_servo_gpio_pin_, PWM_OUTPUT);
         pinMode(trigger_servo_gpio_pin_, PWM_OUTPUT);
@@ -39,15 +42,12 @@ namespace turret_hardware {
 
         pinMode(flywheel_in1_gpio_pin_, OUTPUT);
         pinMode(flywheel_in2_gpio_pin_, OUTPUT);
-
-        pwmSetMode(PWM_MODE_MS);
-        pwmSetClock(192);
-        pwmSetRange(2000);
         
         return hardware_interface::CallbackReturn::SUCCESS;
     }
 
     hardware_interface::CallbackReturn TurretHardwareInterface::on_cleanup([[maybe_unused]] const rclcpp_lifecycle::State & previous_state) {
+        // TODO: Set all outputs to safe state
         return hardware_interface::CallbackReturn::SUCCESS;
     }
 
@@ -96,7 +96,6 @@ namespace turret_hardware {
 
         digitalWrite(flywheel_in1_gpio_pin_, 1);
         digitalWrite(flywheel_in2_gpio_pin_, 0);
-        pwmWrite(flywheel_enable_gpio_pin_, 2000 * flywheel_speed_);
 
         return hardware_interface::return_type::OK;
     }
