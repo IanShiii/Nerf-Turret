@@ -27,13 +27,18 @@ namespace turret_hardware {
     hardware_interface::CallbackReturn TurretHardwareInterface::on_configure([[maybe_unused]] const rclcpp_lifecycle::State & previous_state) {
         wiringPiSetupGpio();
 
-        softServoSetup(pan_servo_gpio_pin_, tilt_servo_gpio_pin_, trigger_servo_gpio_pin_, -1, -1, -1, -1, -1);
+        pwmSetMode(PWM_MODE_MS);
+        pwmSetClock(192);
+        pwmSetRange(20000);
+
+        pinMode(pan_servo_gpio_pin_, PWM_OUTPUT);
+        pinMode(tilt_servo_gpio_pin_, PWM_OUTPUT);
+        pinMode(trigger_servo_gpio_pin_, PWM_OUTPUT);
+        pinMode(flywheel_enable_gpio_pin_, OUTPUT);
 
         pinMode(flywheel_in1_gpio_pin_, OUTPUT);
         pinMode(flywheel_in2_gpio_pin_, OUTPUT);
         
-        softPwmCreate(flywheel_enable_gpio_pin_, 0, 100);
-
         return hardware_interface::CallbackReturn::SUCCESS;
     }
 
@@ -80,14 +85,13 @@ namespace turret_hardware {
     }
 
     hardware_interface::return_type TurretHardwareInterface::write([[maybe_unused]] const rclcpp::Time & time, [[maybe_unused]] const rclcpp::Duration & period) {
-        softServoWrite(pan_servo_gpio_pin_, angle_to_pwm(pan_angle_));
-        softServoWrite(tilt_servo_gpio_pin_, angle_to_pwm(tilt_angle_));
-        softServoWrite(trigger_servo_gpio_pin_, distance_to_pwm(trigger_distance_));
+        pwmWrite(pan_servo_gpio_pin_, angle_to_pwm(pan_angle_));
+        pwmWrite(tilt_servo_gpio_pin_, angle_to_pwm(tilt_angle_));
+        pwmWrite(trigger_servo_gpio_pin_, distance_to_pwm(trigger_distance_));
 
         digitalWrite(flywheel_in1_gpio_pin_, 1);
         digitalWrite(flywheel_in2_gpio_pin_, 0);
-
-        softPwmWrite(flywheel_enable_gpio_pin_, (int)(flywheel_speed_ * 100.0));
+        pwmWrite(flywheel_enable_gpio_pin_, 20000 * flywheel_speed_);
 
         return hardware_interface::return_type::OK;
     }

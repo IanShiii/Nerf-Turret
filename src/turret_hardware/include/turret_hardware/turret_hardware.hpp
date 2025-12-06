@@ -1,8 +1,6 @@
 #pragma once
 
 #include "wiringPi.h"
-#include "softServo.h"
-#include "softPwm.h"
 
 #ifdef TRUE
 #undef TRUE
