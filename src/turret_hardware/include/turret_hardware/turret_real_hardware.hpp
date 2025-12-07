@@ -46,12 +46,11 @@ namespace turret_hardware {
             int trigger_servo_gpio_pin_;
             int flywheel_in1_gpio_pin_;
             int flywheel_in2_gpio_pin_;
-            int flywheel_enable_gpio_pin_;
 
             double pan_angle_;
             double tilt_angle_;
             double trigger_distance_;
-            double flywheel_speed_;
+            double flywheel_enabled_;
 
             /**
              * @brief Converts an angle in degrees to a PWM value.

@@ -23,7 +23,7 @@ namespace turret_hardware {
         pan_angle_ = 0.0;
         tilt_angle_ = 0.0;
         trigger_distance_ = 0.0;
-        flywheel_speed_ = 0.0;
+        flywheel_enabled_ = 0.0;
 
         return hardware_interface::CallbackReturn::SUCCESS;
     }
@@ -38,7 +38,6 @@ namespace turret_hardware {
         pinMode(pan_servo_gpio_pin_, PWM_OUTPUT);
         pinMode(tilt_servo_gpio_pin_, PWM_OUTPUT);
         pinMode(trigger_servo_gpio_pin_, PWM_OUTPUT);
-        pinMode(flywheel_enable_gpio_pin_, OUTPUT);
 
         pinMode(flywheel_in1_gpio_pin_, OUTPUT);
         pinMode(flywheel_in2_gpio_pin_, OUTPUT);
@@ -81,7 +80,7 @@ namespace turret_hardware {
         command_interfaces.emplace_back(hardware_interface::CommandInterface("pan_joint", "angle", &pan_angle_));
         command_interfaces.emplace_back(hardware_interface::CommandInterface("tilt_joint", "angle", &tilt_angle_));
         command_interfaces.emplace_back(hardware_interface::CommandInterface("trigger_joint", "distance", &trigger_distance_));
-        command_interfaces.emplace_back(hardware_interface::CommandInterface("flywheel", "speed", &flywheel_speed_));
+        command_interfaces.emplace_back(hardware_interface::CommandInterface("flywheel", "enabled", &flywheel_enabled_));
         return command_interfaces;
     }
 
@@ -94,8 +93,13 @@ namespace turret_hardware {
         pwmWrite(tilt_servo_gpio_pin_, angle_to_pwm(tilt_angle_));
         pwmWrite(trigger_servo_gpio_pin_, distance_to_pwm(trigger_distance_));
 
-        digitalWrite(flywheel_in1_gpio_pin_, 1);
-        digitalWrite(flywheel_in2_gpio_pin_, 0);
+        if (flywheel_enabled_ == 0.0) {
+            digitalWrite(flywheel_in1_gpio_pin_, 0);
+            digitalWrite(flywheel_in2_gpio_pin_, 0);
+        } else {
+            digitalWrite(flywheel_in1_gpio_pin_, 1);
+            digitalWrite(flywheel_in2_gpio_pin_, 0);
+        }
 
         return hardware_interface::return_type::OK;
     }

@@ -45,6 +45,7 @@
         </joint>
 
         <gpio name="flywheel">
+            <command_interface name="enabled"/>
             <param name="in1_gpio_pin">31</param>
             <param name="in2_gpio_pin">37</param>
         </gpio>

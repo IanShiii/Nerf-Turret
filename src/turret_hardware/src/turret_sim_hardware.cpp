@@ -6,11 +6,11 @@ namespace turret_hardware {
     // LifecycleNodeInterface overrides
     // -------------------------------
 
-    hardware_interface::CallbackReturn TurretSimHardwareInterface::on_init(const hardware_interface::HardwareInfo & info) {
+    hardware_interface::CallbackReturn TurretSimHardwareInterface::on_init([[maybe_unused]]const hardware_interface::HardwareInfo & info) {
         pan_angle_ = 0.0;
         tilt_angle_ = 0.0;
         trigger_distance_ = 0.0;
-        flywheel_speed_ = 0.0;
+        flywheel_enabled_ = 0.0;
 
         return hardware_interface::CallbackReturn::SUCCESS;
     }
@@ -53,7 +53,7 @@ namespace turret_hardware {
         command_interfaces.emplace_back(hardware_interface::CommandInterface("pan_joint", "angle", &pan_angle_));
         command_interfaces.emplace_back(hardware_interface::CommandInterface("tilt_joint", "angle", &tilt_angle_));
         command_interfaces.emplace_back(hardware_interface::CommandInterface("trigger_joint", "distance", &trigger_distance_));
-        command_interfaces.emplace_back(hardware_interface::CommandInterface("flywheel", "speed", &flywheel_speed_));
+        command_interfaces.emplace_back(hardware_interface::CommandInterface("flywheel", "enabled", &flywheel_enabled_));
         return command_interfaces;
     }
 

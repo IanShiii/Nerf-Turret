@@ -36,4 +36,4 @@ flywheel_controller:
   ros__parameters:
     joints:
       - flywheel
-    interface_name: speed
+    interface_name: enabled

@@ -34,6 +34,6 @@ namespace turret_hardware {
             double pan_angle_;
             double tilt_angle_;
             double trigger_distance_;
-            double flywheel_speed_;
+            double flywheel_enabled_;
     };
 }
