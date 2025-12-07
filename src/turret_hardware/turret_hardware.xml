@@ -1,5 +1,8 @@
 <library path="turret_hardware">
-  <class name="turret_hardware/TurretHardwareInterface" 
-         type="turret_hardware::TurretHardwareInterface" 
+  <class name="turret_hardware/TurretRealHardwareInterface" 
+         type="turret_hardware::TurretRealHardwareInterface" 
+         base_class_type="hardware_interface::SystemInterface"/>
+  <class name="turret_hardware/TurretSimHardwareInterface" 
+         type="turret_hardware::TurretSimHardwareInterface" 
          base_class_type="hardware_interface::SystemInterface"/>
 </library>

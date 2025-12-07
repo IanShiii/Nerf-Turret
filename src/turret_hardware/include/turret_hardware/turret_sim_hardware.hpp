@@ -1,28 +1,18 @@
 #pragma once
 
-#include "wiringPi.h"
-
-#ifdef TRUE
-#undef TRUE
-#endif
-
-#ifdef FALSE
-#undef FALSE
-#endif
-
 #include "pluginlib/class_list_macros.hpp"
 #include "hardware_interface/system_interface.hpp"
 
 namespace turret_hardware {
-    class TurretHardwareInterface : public hardware_interface::SystemInterface {
+    class TurretSimHardwareInterface : public hardware_interface::SystemInterface {
         public:
-            TurretHardwareInterface() = default;
+            TurretSimHardwareInterface() = default;
 
             // -------------------------------
             // LifecycleNodeInterface overrides
             // -------------------------------
 
-            hardware_interface::CallbackReturn on_init(const hardware_interface::HardwareInfo & info) override;
+            hardware_interface::CallbackReturn on_init([[maybe_unused]] const hardware_interface::HardwareInfo & info) override;
             hardware_interface::CallbackReturn on_configure([[maybe_unused]] const rclcpp_lifecycle::State & previous_state) override;
             hardware_interface::CallbackReturn on_cleanup([[maybe_unused]] const rclcpp_lifecycle::State & previous_state) override;
             hardware_interface::CallbackReturn on_shutdown([[maybe_unused]] const rclcpp_lifecycle::State & previous_state) override;
@@ -41,28 +31,9 @@ namespace turret_hardware {
             hardware_interface::return_type write([[maybe_unused]] const rclcpp::Time & time, [[maybe_unused]] const rclcpp::Duration & period) override;
 
         private:
-            int pan_servo_gpio_pin_;
-            int tilt_servo_gpio_pin_;
-            int trigger_servo_gpio_pin_;
-            int flywheel_in1_gpio_pin_;
-            int flywheel_in2_gpio_pin_;
-            int flywheel_enable_gpio_pin_;
-
             double pan_angle_;
             double tilt_angle_;
             double trigger_distance_;
             double flywheel_speed_;
-
-            /**
-             * @brief Converts an angle in degrees to a PWM value.
-             * @param angle Angle in degrees [0, 180]
-             */
-            unsigned int angle_to_pwm(double angle);
-
-            /**
-             * @brief Converts a distance for the trigger to a PWM value.
-             * @param distance [0, 1]
-             */
-            unsigned int distance_to_pwm(double distance);
     };
 }

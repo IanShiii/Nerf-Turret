@@ -1,4 +1,4 @@
-#include "turret_hardware/turret_hardware.hpp"
+#include "turret_hardware/turret_real_hardware.hpp"
 
 namespace turret_hardware {
 
@@ -6,7 +6,7 @@ namespace turret_hardware {
     // LifecycleNodeInterface overrides
     // -------------------------------
 
-    hardware_interface::CallbackReturn TurretHardwareInterface::on_init(const hardware_interface::HardwareInfo & info) {
+    hardware_interface::CallbackReturn TurretRealHardwareInterface::on_init(const hardware_interface::HardwareInfo & info) {
         for (auto & joint : info.joints) {
             if (joint.name == "pan_joint") {
                 pan_servo_gpio_pin_ = std::stoi(joint.parameters.at("gpio_pin"));
@@ -28,7 +28,7 @@ namespace turret_hardware {
         return hardware_interface::CallbackReturn::SUCCESS;
     }
 
-    hardware_interface::CallbackReturn TurretHardwareInterface::on_configure([[maybe_unused]] const rclcpp_lifecycle::State & previous_state) {
+    hardware_interface::CallbackReturn TurretRealHardwareInterface::on_configure([[maybe_unused]] const rclcpp_lifecycle::State & previous_state) {
         wiringPiSetupGpio();
 
         pwmSetMode(PWM_MODE_MS);
@@ -46,24 +46,24 @@ namespace turret_hardware {
         return hardware_interface::CallbackReturn::SUCCESS;
     }
 
-    hardware_interface::CallbackReturn TurretHardwareInterface::on_cleanup([[maybe_unused]] const rclcpp_lifecycle::State & previous_state) {
+    hardware_interface::CallbackReturn TurretRealHardwareInterface::on_cleanup([[maybe_unused]] const rclcpp_lifecycle::State & previous_state) {
         // TODO: Set all outputs to safe state
         return hardware_interface::CallbackReturn::SUCCESS;
     }
 
-    hardware_interface::CallbackReturn TurretHardwareInterface::on_shutdown([[maybe_unused]] const rclcpp_lifecycle::State & previous_state) {
+    hardware_interface::CallbackReturn TurretRealHardwareInterface::on_shutdown([[maybe_unused]] const rclcpp_lifecycle::State & previous_state) {
         return hardware_interface::CallbackReturn::SUCCESS;
     }
 
-    hardware_interface::CallbackReturn TurretHardwareInterface::on_activate([[maybe_unused]] const rclcpp_lifecycle::State & previous_state) {
+    hardware_interface::CallbackReturn TurretRealHardwareInterface::on_activate([[maybe_unused]] const rclcpp_lifecycle::State & previous_state) {
         return hardware_interface::CallbackReturn::SUCCESS;
     }
 
-    hardware_interface::CallbackReturn TurretHardwareInterface::on_deactivate([[maybe_unused]] const rclcpp_lifecycle::State & previous_state) {
+    hardware_interface::CallbackReturn TurretRealHardwareInterface::on_deactivate([[maybe_unused]] const rclcpp_lifecycle::State & previous_state) {
         return hardware_interface::CallbackReturn::SUCCESS;
     }
 
-    hardware_interface::CallbackReturn TurretHardwareInterface::on_error([[maybe_unused]] const rclcpp_lifecycle::State & previous_state) {
+    hardware_interface::CallbackReturn TurretRealHardwareInterface::on_error([[maybe_unused]] const rclcpp_lifecycle::State & previous_state) {
         return hardware_interface::CallbackReturn::SUCCESS;
     }
 
@@ -71,12 +71,12 @@ namespace turret_hardware {
     // SystemInterface overrides
     // --------------------------------
 
-    std::vector<hardware_interface::StateInterface> TurretHardwareInterface::export_state_interfaces() {
+    std::vector<hardware_interface::StateInterface> TurretRealHardwareInterface::export_state_interfaces() {
         std::vector<hardware_interface::StateInterface> state_interfaces;
         return state_interfaces;
     }
 
-    std::vector<hardware_interface::CommandInterface> TurretHardwareInterface::export_command_interfaces() {
+    std::vector<hardware_interface::CommandInterface> TurretRealHardwareInterface::export_command_interfaces() {
         std::vector<hardware_interface::CommandInterface> command_interfaces;
         command_interfaces.emplace_back(hardware_interface::CommandInterface("pan_joint", "angle", &pan_angle_));
         command_interfaces.emplace_back(hardware_interface::CommandInterface("tilt_joint", "angle", &tilt_angle_));
@@ -85,11 +85,11 @@ namespace turret_hardware {
         return command_interfaces;
     }
 
-    hardware_interface::return_type TurretHardwareInterface::read([[maybe_unused]] const rclcpp::Time & time, [[maybe_unused]] const rclcpp::Duration & period) {
+    hardware_interface::return_type TurretRealHardwareInterface::read([[maybe_unused]] const rclcpp::Time & time, [[maybe_unused]] const rclcpp::Duration & period) {
         return hardware_interface::return_type::OK;
     }
 
-    hardware_interface::return_type TurretHardwareInterface::write([[maybe_unused]] const rclcpp::Time & time, [[maybe_unused]] const rclcpp::Duration & period) {
+    hardware_interface::return_type TurretRealHardwareInterface::write([[maybe_unused]] const rclcpp::Time & time, [[maybe_unused]] const rclcpp::Duration & period) {
         pwmWrite(pan_servo_gpio_pin_, angle_to_pwm(pan_angle_));
         pwmWrite(tilt_servo_gpio_pin_, angle_to_pwm(tilt_angle_));
         pwmWrite(trigger_servo_gpio_pin_, distance_to_pwm(trigger_distance_));
@@ -100,13 +100,13 @@ namespace turret_hardware {
         return hardware_interface::return_type::OK;
     }
 
-    unsigned int TurretHardwareInterface::angle_to_pwm(double angle) {
+    unsigned int TurretRealHardwareInterface::angle_to_pwm(double angle) {
         return (unsigned int)(100 + (angle / 180.0) * 100);
     }
 
-    unsigned int TurretHardwareInterface::distance_to_pwm(double distance) {
+    unsigned int TurretRealHardwareInterface::distance_to_pwm(double distance) {
         return (unsigned int)(100 + distance * 100);
     }
 }
 
-PLUGINLIB_EXPORT_CLASS(turret_hardware::TurretHardwareInterface, hardware_interface::SystemInterface)
+PLUGINLIB_EXPORT_CLASS(turret_hardware::TurretRealHardwareInterface, hardware_interface::SystemInterface)

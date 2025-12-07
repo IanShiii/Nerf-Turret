@@ -26,7 +26,7 @@
 
     <ros2_control name="turret_hardware_interface" type="system">
         <hardware>
-            <plugin>turret_hardware/TurretHardwareInterface</plugin>
+            <plugin>turret_hardware/TurretRealHardwareInterface</plugin>
         </hardware>
 
         <joint name="pan_joint">
