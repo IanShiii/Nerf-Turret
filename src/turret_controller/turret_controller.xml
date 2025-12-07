@@ -1,0 +1,5 @@
+<library path="turret_controller">
+  <class name="turret_controller/TurretController" 
+        type="turret_controller::TurretController" 
+        base_class_type="controller_interface::ControllerInterface"/>
+</library>
