@@ -56,14 +56,12 @@ namespace turret_hardware {
             /**
              * @brief Converts an angle in degrees to a PWM value.
              * @param angle Angle in degrees [0, 180]
-             * @return PWM value in microseconds [500, 2500]
              */
             unsigned int angle_to_pwm(double angle);
 
             /**
              * @brief Converts a distance for the trigger to a PWM value.
              * @param distance [0, 1]
-             * @return PWM value in microseconds [500, 2500]
              */
             unsigned int distance_to_pwm(double distance);
     };
