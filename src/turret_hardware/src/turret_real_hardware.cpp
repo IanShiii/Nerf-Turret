@@ -31,16 +31,16 @@ namespace turret_hardware {
     hardware_interface::CallbackReturn TurretRealHardwareInterface::on_configure([[maybe_unused]] const rclcpp_lifecycle::State & previous_state) {
         wiringPiSetupGpio();
 
-        pwmSetMode(PWM_MODE_MS);
-        pwmSetClock(192);
-        pwmSetRange(2000);
-
         pinMode(pan_servo_gpio_pin_, PWM_OUTPUT);
         pinMode(tilt_servo_gpio_pin_, PWM_OUTPUT);
         pinMode(trigger_servo_gpio_pin_, PWM_OUTPUT);
 
         pinMode(flywheel_in1_gpio_pin_, OUTPUT);
         pinMode(flywheel_in2_gpio_pin_, OUTPUT);
+
+        pwmSetMode(PWM_MODE_MS);
+        pwmSetClock(192);
+        pwmSetRange(2000);
         
         return hardware_interface::CallbackReturn::SUCCESS;
     }
@@ -105,11 +105,11 @@ namespace turret_hardware {
     }
 
     unsigned int TurretRealHardwareInterface::angle_to_pwm(double angle) {
-        return (unsigned int)(100 + (angle / 180.0) * 100);
+        return (unsigned int)(50 + (angle / 180.0) * 200);
     }
 
     unsigned int TurretRealHardwareInterface::distance_to_pwm(double distance) {
-        return (unsigned int)(100 + distance * 100);
+        return (unsigned int)(50 + distance * 200);
     }
 }
 
