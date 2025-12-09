@@ -16,6 +16,20 @@ def generate_launch_description():
         )
     )
 
+    joy_node = Node(
+        package='joy',
+        executable='joy_node',
+        output='screen'
+    )
+
+    turret_teleop_node = Node(
+        package='turret_teleop',
+        executable='turret_teleop_node',
+        output='screen'
+    )
+
     return LaunchDescription([
-        ros2_control_launch
+        ros2_control_launch,
+        joy_node,
+        turret_teleop_node
     ])

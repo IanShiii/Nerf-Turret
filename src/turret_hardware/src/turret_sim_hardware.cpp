@@ -62,6 +62,14 @@ namespace turret_hardware {
     }
 
     hardware_interface::return_type TurretSimHardwareInterface::write([[maybe_unused]] const rclcpp::Time & time, [[maybe_unused]] const rclcpp::Duration & period) {
+        RCLCPP_INFO(
+            get_logger(),
+            "Writing to turret hardware: pan_angle=%.2f, tilt_angle=%.2f, trigger_distance=%.2f, flywheel_enabled=%.2f",
+            pan_angle_,
+            tilt_angle_,
+            trigger_distance_,
+            flywheel_enabled_
+        );
         return hardware_interface::return_type::OK;
     }
 }
