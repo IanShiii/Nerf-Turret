@@ -44,6 +44,7 @@ namespace turret_hardware {
             // --------------------------------
             // GPIO Pins
             // --------------------------------
+
             int pan_servo_gpio_pin_;
             int tilt_servo_gpio_pin_;
             int trigger_servo_gpio_pin_;
@@ -53,6 +54,7 @@ namespace turret_hardware {
             // --------------------------------
             // Software Limits
             // --------------------------------
+
             double pan_min_angle_degrees_;
             double pan_max_angle_degrees_;
             double tilt_min_angle_degrees_;
@@ -63,10 +65,11 @@ namespace turret_hardware {
             // --------------------------------
             // Targets
             // --------------------------------
-            double pan_angle_degrees_{90};
-            double tilt_angle_degrees_{0};
-            double trigger_distance_{0};
-            double flywheel_enabled_{0};
+
+            double pan_angle_degrees_;
+            double tilt_angle_degrees_;
+            double trigger_distance_;
+            double flywheel_enabled_;
 
             /**
              * @brief Converts an angle in degrees to a PWM value.

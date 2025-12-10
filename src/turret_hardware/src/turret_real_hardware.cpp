@@ -31,6 +31,11 @@ namespace turret_hardware {
     }
 
     hardware_interface::CallbackReturn TurretRealHardwareInterface::on_configure([[maybe_unused]] const rclcpp_lifecycle::State & previous_state) {
+        pan_angle_degrees_ = (pan_min_angle_degrees_ + pan_max_angle_degrees_) / 2.0;
+        tilt_angle_degrees_ = (tilt_min_angle_degrees_ + tilt_max_angle_degrees_) / 2.0;
+        trigger_distance_ = trigger_min_distance_;
+        flywheel_enabled_ = 0.0;
+        
         wiringPiSetupGpio();
 
         pinMode(pan_servo_gpio_pin_, PWM_OUTPUT);

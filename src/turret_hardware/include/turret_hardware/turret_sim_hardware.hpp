@@ -35,10 +35,10 @@ namespace turret_hardware {
             // Targets
             // --------------------------------
             
-            double pan_angle_degrees_{90};
-            double tilt_angle_degrees_{0};
-            double trigger_distance_{0};
-            double flywheel_enabled_{0};
+            double pan_angle_degrees_;
+            double tilt_angle_degrees_;
+            double trigger_distance_;
+            double flywheel_enabled_;
 
             // --------------------------------
             // Software Limits
