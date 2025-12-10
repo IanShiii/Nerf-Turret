@@ -97,9 +97,9 @@ namespace turret_controller {
 
     void TurretController::trigger_shoot() {
         trigger_distance_.store(1.0); // Extend the trigger
-        rclcpp::sleep_for(std::chrono::milliseconds(1000));
+        rclcpp::sleep_for(std::chrono::milliseconds(400));
         trigger_distance_.store(0.0); // Retract the trigger
-        rclcpp::sleep_for(std::chrono::milliseconds(1000));
+        rclcpp::sleep_for(std::chrono::milliseconds(500));
         trigger_requested_.store(false);
     }
 }
