@@ -19,7 +19,10 @@ def generate_launch_description():
     joy_node = Node(
         package='joy',
         executable='joy_node',
-        output='screen'
+        output='screen',
+        parameters=[{
+            'deadzone': 0.0
+        }]
     )
 
     turret_teleop_node = Node(
