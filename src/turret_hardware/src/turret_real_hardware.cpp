@@ -16,13 +16,13 @@ namespace turret_hardware {
         
         for (auto & joint : info.joints) {
             if (joint.name == "pan_joint") {
-                pan_servo_gpio_pin_ = std::stoi(joint.parameters.at("gpio_pin"));
+                pan_servo_id_ = std::stoi(joint.parameters.at("servo_id"));
                 pan_inverted_ = joint.parameters.at("inverted") == "true";
             } else if (joint.name == "tilt_joint") {
-                tilt_servo_gpio_pin_ = std::stoi(joint.parameters.at("gpio_pin"));
+                tilt_servo_id_ = std::stoi(joint.parameters.at("servo_id"));
                 tilt_inverted_ = joint.parameters.at("inverted") == "true";
             } else if (joint.name == "trigger_joint") {
-                trigger_servo_gpio_pin_ = std::stoi(joint.parameters.at("gpio_pin"));
+                trigger_servo_id_ = std::stoi(joint.parameters.at("servo_id"));
                 trigger_inverted_ = joint.parameters.at("inverted") == "true";
             } else if (joint.name == "flywheel_joint") {
                 flywheel_in1_gpio_pin_ = std::stoi(joint.parameters.at("in1_gpio_pin"));
@@ -38,12 +38,10 @@ namespace turret_hardware {
         tilt_angle_degrees_ = (tilt_min_angle_degrees_ + tilt_max_angle_degrees_) / 2.0;
         trigger_distance_ = trigger_min_distance_;
         flywheel_enabled_ = 0.0;
+
+        pca.set_pwm_freq(50);
         
         wiringPiSetupGpio();
-
-        pinMode(pan_servo_gpio_pin_, PWM_OUTPUT);
-        pinMode(tilt_servo_gpio_pin_, PWM_OUTPUT);
-        pinMode(trigger_servo_gpio_pin_, PWM_OUTPUT);
 
         pinMode(flywheel_in1_gpio_pin_, OUTPUT);
         pinMode(flywheel_in2_gpio_pin_, OUTPUT);
@@ -101,9 +99,9 @@ namespace turret_hardware {
     hardware_interface::return_type TurretRealHardwareInterface::write([[maybe_unused]] const rclcpp::Time & time, [[maybe_unused]] const rclcpp::Duration & period) {
         clamp_command_values();
 
-        pwmWrite(pan_servo_gpio_pin_, angle_to_pwm(pan_angle_degrees_, pan_inverted_));
-        pwmWrite(tilt_servo_gpio_pin_, angle_to_pwm(tilt_angle_degrees_, tilt_inverted_));
-        pwmWrite(trigger_servo_gpio_pin_, distance_to_pwm(trigger_distance_, trigger_inverted_));
+        pca.set_pwm(pan_servo_id_, 0, angle_to_ticks(pan_angle_degrees_, pan_inverted_));
+        pca.set_pwm(tilt_servo_id_, 0, angle_to_ticks(tilt_angle_degrees_, tilt_inverted_));
+        pca.set_pwm(trigger_servo_id_, 0, distance_to_ticks(trigger_distance_, trigger_inverted_));
 
         if (flywheel_enabled_ == 0.0) {
             digitalWrite(flywheel_in1_gpio_pin_, 0);
@@ -116,18 +114,17 @@ namespace turret_hardware {
         return hardware_interface::return_type::OK;
     }
 
-    unsigned int TurretRealHardwareInterface::angle_to_pwm(double angle, bool inverted) {
+    unsigned int TurretRealHardwareInterface::angle_to_ticks(double angle, bool inverted) {
         if (inverted) {
             angle = 180.0 - angle;
         }
-        return (unsigned int)(50 + (angle / 180.0) * 200);
+        double microseconds = 1000 + (angle / 180.0) * 1000.0; // 1000us to 2000us
+        double microseconds_per_tick = 20000.0 / 4096.0; // 20ms period, 4096 ticks
+        return (unsigned int)(microseconds / microseconds_per_tick);
     }
 
-    unsigned int TurretRealHardwareInterface::distance_to_pwm(double distance, bool inverted) {
-        if (inverted) {
-            distance = 1.0 - distance;
-        }
-        return (unsigned int)(50 + distance * 200);
+    unsigned int TurretRealHardwareInterface::distance_to_ticks(double distance, bool inverted) {
+        return angle_to_ticks(distance * 180.0, inverted);
     }
 
     void TurretRealHardwareInterface::clamp_command_values() {

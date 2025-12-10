@@ -26,24 +26,24 @@
 
     <ros2_control name="turret_hardware_interface" type="system">
         <hardware>
-            <plugin>turret_hardware/TurretSimHardwareInterface</plugin>
+            <plugin>turret_hardware/TurretRealHardwareInterface</plugin>
         </hardware>
 
         <joint name="pan_joint">
             <command_interface name="angle"/>
-            <param name="gpio_pin">18</param>
+            <param name="servo_id">0</param>
             <param name="inverted">false</param>
         </joint>
 
         <joint name="tilt_joint">
             <command_interface name="angle"/>
-            <param name="gpio_pin">0</param>
+            <param name="servo_id">0</param>
             <param name="inverted">false</param>
         </joint>
 
         <joint name="trigger_joint">
             <command_interface name="distance"/>
-            <param name="gpio_pin">0</param>
+            <param name="servo_id">0</param>
             <param name="inverted">false</param>
         </joint>
 

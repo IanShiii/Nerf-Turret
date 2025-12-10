@@ -1,6 +1,6 @@
 #pragma once
 
-#include "wiringPi.h"
+#include <wiringPi.h>
 
 #ifdef TRUE
 #undef TRUE
@@ -9,6 +9,8 @@
 #ifdef FALSE
 #undef FALSE
 #endif
+
+#include <PiPCA9685/PCA9685.h>
 
 #include "pluginlib/class_list_macros.hpp"
 #include "hardware_interface/system_interface.hpp"
@@ -41,13 +43,15 @@ namespace turret_hardware {
             hardware_interface::return_type write([[maybe_unused]] const rclcpp::Time & time, [[maybe_unused]] const rclcpp::Duration & period) override;
 
         private:
+            PiPCA9685::PCA9685 pca;
+
             // --------------------------------
-            // GPIO Pins
+            // PCA9685 servo numbers and GPIO Pins
             // --------------------------------
 
-            int pan_servo_gpio_pin_;
-            int tilt_servo_gpio_pin_;
-            int trigger_servo_gpio_pin_;
+            int pan_servo_id_;
+            int tilt_servo_id_;
+            int trigger_servo_id_;
             int flywheel_in1_gpio_pin_;
             int flywheel_in2_gpio_pin_;
 
@@ -80,16 +84,16 @@ namespace turret_hardware {
             double flywheel_enabled_;
 
             /**
-             * @brief Converts an angle in degrees to a PWM value.
+             * @brief Converts an angle in degrees to ticks for the PCA9685.
              * @param angle Angle in degrees [0, 180]
              */
-            unsigned int angle_to_pwm(double angle, bool inverted);
+            unsigned int angle_to_ticks(double angle, bool inverted);
 
             /**
-             * @brief Converts a distance for the trigger to a PWM value.
+             * @brief Converts a distance for the trigger to ticks for the PCA9685.
              * @param distance [0, 1]
              */
-            unsigned int distance_to_pwm(double distance, bool inverted);
+            unsigned int distance_to_ticks(double distance, bool inverted);
 
             /**
              * @brief Clamps command values to their respective min/max ranges.
