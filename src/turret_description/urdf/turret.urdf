@@ -33,12 +33,14 @@
             <command_interface name="angle"/>
             <param name="servo_id">0</param>
             <param name="inverted">false</param>
+            <param name="offset">0.0</param>
         </joint>
 
         <joint name="tilt_joint">
             <command_interface name="angle"/>
             <param name="servo_id">1</param>
             <param name="inverted">false</param>
+            <param name="offset">0.0</param>
         </joint>
 
         <joint name="trigger_joint">

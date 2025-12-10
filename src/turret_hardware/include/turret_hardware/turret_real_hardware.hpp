@@ -75,6 +75,13 @@ namespace turret_hardware {
             bool trigger_inverted_;
 
             // --------------------------------
+            // Inversions
+            // --------------------------------
+
+            double pan_offset_degrees_;
+            double tilt_offset_degrees_;
+
+            // --------------------------------
             // Targets
             // --------------------------------
 

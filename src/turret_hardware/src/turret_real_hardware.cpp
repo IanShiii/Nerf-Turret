@@ -18,9 +18,11 @@ namespace turret_hardware {
             if (joint.name == "pan_joint") {
                 pan_servo_id_ = std::stoi(joint.parameters.at("servo_id"));
                 pan_inverted_ = joint.parameters.at("inverted") == "true";
+                pan_offset_degrees_ = std::stod(joint.parameters.at("offset"));
             } else if (joint.name == "tilt_joint") {
                 tilt_servo_id_ = std::stoi(joint.parameters.at("servo_id"));
                 tilt_inverted_ = joint.parameters.at("inverted") == "true";
+                tilt_offset_degrees_ = std::stod(joint.parameters.at("offset"));
             } else if (joint.name == "trigger_joint") {
                 trigger_servo_id_ = std::stoi(joint.parameters.at("servo_id"));
                 trigger_inverted_ = joint.parameters.at("inverted") == "true";
@@ -99,8 +101,8 @@ namespace turret_hardware {
     hardware_interface::return_type TurretRealHardwareInterface::write([[maybe_unused]] const rclcpp::Time & time, [[maybe_unused]] const rclcpp::Duration & period) {
         clamp_command_values();
 
-        pca.set_pwm(pan_servo_id_, 0, angle_to_ticks(pan_angle_degrees_, pan_inverted_));
-        pca.set_pwm(tilt_servo_id_, 0, angle_to_ticks(tilt_angle_degrees_, tilt_inverted_));
+        pca.set_pwm(pan_servo_id_, 0, angle_to_ticks(pan_angle_degrees_ - pan_offset_degrees_, pan_inverted_));
+        pca.set_pwm(tilt_servo_id_, 0, angle_to_ticks(tilt_angle_degrees_ - tilt_offset_degrees_, tilt_inverted_));
         pca.set_pwm(trigger_servo_id_, 0, distance_to_ticks(trigger_distance_, trigger_inverted_));
 
         if (flywheel_enabled_ == 0.0) {
