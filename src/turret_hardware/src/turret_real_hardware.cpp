@@ -26,9 +26,13 @@ namespace turret_hardware {
             } else if (joint.name == "trigger_joint") {
                 trigger_servo_id_ = std::stoi(joint.parameters.at("servo_id"));
                 trigger_inverted_ = joint.parameters.at("inverted") == "true";
-            } else if (joint.name == "flywheel_joint") {
-                flywheel_in1_gpio_pin_ = std::stoi(joint.parameters.at("in1_gpio_pin"));
-                flywheel_in2_gpio_pin_ = std::stoi(joint.parameters.at("in2_gpio_pin"));
+            }
+        }
+
+        for (auto & gpio : info.gpios) {
+            if (gpio.name == "flywheel") {
+                flywheel_in1_gpio_pin_ = std::stoi(gpio.parameters.at("in1_gpio_pin"));
+                flywheel_in2_gpio_pin_ = std::stoi(gpio.parameters.at("in2_gpio_pin"));
             }
         }
 
@@ -48,9 +52,8 @@ namespace turret_hardware {
         pinMode(flywheel_in1_gpio_pin_, OUTPUT);
         pinMode(flywheel_in2_gpio_pin_, OUTPUT);
 
-        pwmSetMode(PWM_MODE_MS);
-        pwmSetClock(192);
-        pwmSetRange(2000);
+        digitalWrite(flywheel_in1_gpio_pin_, LOW);
+        digitalWrite(flywheel_in2_gpio_pin_, LOW);
         
         return hardware_interface::CallbackReturn::SUCCESS;
     }
@@ -106,11 +109,11 @@ namespace turret_hardware {
         pca.set_pwm(trigger_servo_id_, 0, distance_to_ticks(trigger_distance_, trigger_inverted_));
 
         if (flywheel_enabled_ == 0.0) {
-            digitalWrite(flywheel_in1_gpio_pin_, 0);
-            digitalWrite(flywheel_in2_gpio_pin_, 0);
+            digitalWrite(flywheel_in1_gpio_pin_, LOW);
+            digitalWrite(flywheel_in2_gpio_pin_, LOW);
         } else {
-            digitalWrite(flywheel_in1_gpio_pin_, 1);
-            digitalWrite(flywheel_in2_gpio_pin_, 0);
+            digitalWrite(flywheel_in1_gpio_pin_, HIGH);
+            digitalWrite(flywheel_in2_gpio_pin_, LOW);
         }
 
         return hardware_interface::return_type::OK;
