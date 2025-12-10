@@ -1,1 +1,2 @@
-- Add config for offsets 
+- Reset everything to safe state on cleanup
+- Package for integrating opencv code
