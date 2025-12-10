@@ -37,13 +37,13 @@
 
         <joint name="tilt_joint">
             <command_interface name="angle"/>
-            <param name="servo_id">0</param>
+            <param name="servo_id">1</param>
             <param name="inverted">false</param>
         </joint>
 
         <joint name="trigger_joint">
             <command_interface name="distance"/>
-            <param name="servo_id">0</param>
+            <param name="servo_id">2</param>
             <param name="inverted">false</param>
         </joint>
 
