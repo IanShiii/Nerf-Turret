@@ -63,6 +63,14 @@ namespace turret_hardware {
             double trigger_max_distance_;
 
             // --------------------------------
+            // Inversions
+            // --------------------------------
+
+            bool pan_inverted_;
+            bool tilt_inverted_;
+            bool trigger_inverted_;
+
+            // --------------------------------
             // Targets
             // --------------------------------
 
@@ -75,13 +83,13 @@ namespace turret_hardware {
              * @brief Converts an angle in degrees to a PWM value.
              * @param angle Angle in degrees [0, 180]
              */
-            unsigned int angle_to_pwm(double angle);
+            unsigned int angle_to_pwm(double angle, bool inverted);
 
             /**
              * @brief Converts a distance for the trigger to a PWM value.
              * @param distance [0, 1]
              */
-            unsigned int distance_to_pwm(double distance);
+            unsigned int distance_to_pwm(double distance, bool inverted);
 
             /**
              * @brief Clamps command values to their respective min/max ranges.

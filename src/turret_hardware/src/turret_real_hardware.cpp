@@ -17,10 +17,13 @@ namespace turret_hardware {
         for (auto & joint : info.joints) {
             if (joint.name == "pan_joint") {
                 pan_servo_gpio_pin_ = std::stoi(joint.parameters.at("gpio_pin"));
+                pan_inverted_ = joint.parameters.at("inverted") == "true";
             } else if (joint.name == "tilt_joint") {
                 tilt_servo_gpio_pin_ = std::stoi(joint.parameters.at("gpio_pin"));
+                tilt_inverted_ = joint.parameters.at("inverted") == "true";
             } else if (joint.name == "trigger_joint") {
                 trigger_servo_gpio_pin_ = std::stoi(joint.parameters.at("gpio_pin"));
+                trigger_inverted_ = joint.parameters.at("inverted") == "true";
             } else if (joint.name == "flywheel_joint") {
                 flywheel_in1_gpio_pin_ = std::stoi(joint.parameters.at("in1_gpio_pin"));
                 flywheel_in2_gpio_pin_ = std::stoi(joint.parameters.at("in2_gpio_pin"));
@@ -98,9 +101,9 @@ namespace turret_hardware {
     hardware_interface::return_type TurretRealHardwareInterface::write([[maybe_unused]] const rclcpp::Time & time, [[maybe_unused]] const rclcpp::Duration & period) {
         clamp_command_values();
 
-        pwmWrite(pan_servo_gpio_pin_, angle_to_pwm(pan_angle_degrees_));
-        pwmWrite(tilt_servo_gpio_pin_, angle_to_pwm(tilt_angle_degrees_));
-        pwmWrite(trigger_servo_gpio_pin_, distance_to_pwm(trigger_distance_));
+        pwmWrite(pan_servo_gpio_pin_, angle_to_pwm(pan_angle_degrees_, pan_inverted_));
+        pwmWrite(tilt_servo_gpio_pin_, angle_to_pwm(tilt_angle_degrees_, tilt_inverted_));
+        pwmWrite(trigger_servo_gpio_pin_, distance_to_pwm(trigger_distance_, trigger_inverted_));
 
         if (flywheel_enabled_ == 0.0) {
             digitalWrite(flywheel_in1_gpio_pin_, 0);
@@ -113,11 +116,17 @@ namespace turret_hardware {
         return hardware_interface::return_type::OK;
     }
 
-    unsigned int TurretRealHardwareInterface::angle_to_pwm(double angle) {
+    unsigned int TurretRealHardwareInterface::angle_to_pwm(double angle, bool inverted) {
+        if (inverted) {
+            angle = 180.0 - angle;
+        }
         return (unsigned int)(50 + (angle / 180.0) * 200);
     }
 
-    unsigned int TurretRealHardwareInterface::distance_to_pwm(double distance) {
+    unsigned int TurretRealHardwareInterface::distance_to_pwm(double distance, bool inverted) {
+        if (inverted) {
+            distance = 1.0 - distance;
+        }
         return (unsigned int)(50 + distance * 200);
     }
 
