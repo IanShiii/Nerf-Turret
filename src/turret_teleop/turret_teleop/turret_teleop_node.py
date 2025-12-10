@@ -25,7 +25,10 @@ class TurretTeleopNode(Node):
 
     def joy_callback(self, msg: Joy):
         # Left joystick Y controls tilt
-        tilt_angle = (msg.axes[1] + 1.0) / 2.0 * 30.0 + 90.0  # Map from [-1, 1] to [90, 120]
+        left_joystick_y = msg.axes[1]
+        if left_joystick_y < 0:
+            left_joystick_y = 0.0
+        tilt_angle = left_joystick_y * 50.0 + 90.0
         tilt_msg = Float64()
         tilt_msg.data = tilt_angle
         self.tilt_angle_publisher.publish(tilt_msg)

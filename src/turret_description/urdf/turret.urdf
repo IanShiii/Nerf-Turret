@@ -15,7 +15,7 @@
     <joint name="tilt_joint" type="revolute">
         <parent link="pan_link"/>
         <child link="tilt_link"/>
-        <limit lower="90.0" upper="120.0" effort="0.0" velocity="0.0"/>
+        <limit lower="90.0" upper="140.0" effort="0.0" velocity="0.0"/>
     </joint>
 
     <joint name="trigger_joint" type="prismatic">
@@ -40,13 +40,13 @@
             <command_interface name="angle"/>
             <param name="servo_id">1</param>
             <param name="inverted">false</param>
-            <param name="offset">0.0</param>
+            <param name="offset">25.0</param>
         </joint>
 
         <joint name="trigger_joint">
             <command_interface name="distance"/>
             <param name="servo_id">2</param>
-            <param name="inverted">false</param>
+            <param name="inverted">true</param>
         </joint>
 
         <gpio name="flywheel">

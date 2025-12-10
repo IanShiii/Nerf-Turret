@@ -37,7 +37,7 @@ namespace turret_hardware {
 
     hardware_interface::CallbackReturn TurretRealHardwareInterface::on_configure([[maybe_unused]] const rclcpp_lifecycle::State & previous_state) {
         pan_angle_degrees_ = (pan_min_angle_degrees_ + pan_max_angle_degrees_) / 2.0;
-        tilt_angle_degrees_ = (tilt_min_angle_degrees_ + tilt_max_angle_degrees_) / 2.0;
+        tilt_angle_degrees_ = tilt_min_angle_degrees_;
         trigger_distance_ = trigger_min_distance_;
         flywheel_enabled_ = 0.0;
 
@@ -120,7 +120,7 @@ namespace turret_hardware {
         if (inverted) {
             angle = 180.0 - angle;
         }
-        double microseconds = 1000 + (angle / 180.0) * 1000.0; // 1000us to 2000us
+        double microseconds = 500 + (angle / 180.0) * 2000.0; // 500us to 2500us
         double microseconds_per_tick = 20000.0 / 4096.0; // 20ms period, 4096 ticks
         return (unsigned int)(microseconds / microseconds_per_tick);
     }

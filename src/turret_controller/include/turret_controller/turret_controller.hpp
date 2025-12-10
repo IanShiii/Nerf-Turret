@@ -23,7 +23,7 @@ namespace turret_controller {
 
         private:
             double pan_angle_{90.0};
-            double tilt_angle_{0.0};
+            double tilt_angle_{90.0};
             bool flywheel_enabled_{false};
             std::atomic<double> trigger_distance_{0.0};
             std::atomic<bool> trigger_requested_{false};
