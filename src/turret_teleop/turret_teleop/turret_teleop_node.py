@@ -31,7 +31,7 @@ class TurretTeleopNode(Node):
         self.tilt_angle_publisher.publish(tilt_msg)
 
         # Right joystick X controls pan
-        pan_angle = (msg.axes[2] + 1.0) / 2.0 * 180.0  # Map from [-1, 1] to [0, 180]
+        pan_angle = (-msg.axes[2] + 1.0) / 2.0 * 180.0  # Map from [-1, 1] to [0, 180]
         pan_msg = Float64()
         pan_msg.data = pan_angle
         self.pan_angle_publisher.publish(pan_msg)
