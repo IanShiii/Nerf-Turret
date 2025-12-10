@@ -7,6 +7,13 @@ namespace turret_hardware {
     // -------------------------------
 
     hardware_interface::CallbackReturn TurretRealHardwareInterface::on_init(const hardware_interface::HardwareInfo & info) {
+        pan_min_angle_degrees_ = info.limits.at("pan_joint").min_position;
+        pan_max_angle_degrees_ = info.limits.at("pan_joint").max_position;
+        tilt_min_angle_degrees_ = info.limits.at("tilt_joint").min_position;
+        tilt_max_angle_degrees_ = info.limits.at("tilt_joint").max_position;
+        trigger_min_distance_ = info.limits.at("trigger_joint").min_position;
+        trigger_max_distance_ = info.limits.at("trigger_joint").max_position;
+        
         for (auto & joint : info.joints) {
             if (joint.name == "pan_joint") {
                 pan_servo_gpio_pin_ = std::stoi(joint.parameters.at("gpio_pin"));
@@ -19,11 +26,6 @@ namespace turret_hardware {
                 flywheel_in2_gpio_pin_ = std::stoi(joint.parameters.at("in2_gpio_pin"));
             }
         }
-
-        pan_angle_ = 0.0;
-        tilt_angle_ = 0.0;
-        trigger_distance_ = 0.0;
-        flywheel_enabled_ = 0.0;
 
         return hardware_interface::CallbackReturn::SUCCESS;
     }
@@ -77,8 +79,8 @@ namespace turret_hardware {
 
     std::vector<hardware_interface::CommandInterface> TurretRealHardwareInterface::export_command_interfaces() {
         std::vector<hardware_interface::CommandInterface> command_interfaces;
-        command_interfaces.emplace_back(hardware_interface::CommandInterface("pan_joint", "angle", &pan_angle_));
-        command_interfaces.emplace_back(hardware_interface::CommandInterface("tilt_joint", "angle", &tilt_angle_));
+        command_interfaces.emplace_back(hardware_interface::CommandInterface("pan_joint", "angle", &pan_angle_degrees_));
+        command_interfaces.emplace_back(hardware_interface::CommandInterface("tilt_joint", "angle", &tilt_angle_degrees_));
         command_interfaces.emplace_back(hardware_interface::CommandInterface("trigger_joint", "distance", &trigger_distance_));
         command_interfaces.emplace_back(hardware_interface::CommandInterface("flywheel", "enabled", &flywheel_enabled_));
         return command_interfaces;
@@ -89,8 +91,10 @@ namespace turret_hardware {
     }
 
     hardware_interface::return_type TurretRealHardwareInterface::write([[maybe_unused]] const rclcpp::Time & time, [[maybe_unused]] const rclcpp::Duration & period) {
-        pwmWrite(pan_servo_gpio_pin_, angle_to_pwm(pan_angle_));
-        pwmWrite(tilt_servo_gpio_pin_, angle_to_pwm(tilt_angle_));
+        clamp_command_values();
+
+        pwmWrite(pan_servo_gpio_pin_, angle_to_pwm(pan_angle_degrees_));
+        pwmWrite(tilt_servo_gpio_pin_, angle_to_pwm(tilt_angle_degrees_));
         pwmWrite(trigger_servo_gpio_pin_, distance_to_pwm(trigger_distance_));
 
         if (flywheel_enabled_ == 0.0) {
@@ -110,6 +114,26 @@ namespace turret_hardware {
 
     unsigned int TurretRealHardwareInterface::distance_to_pwm(double distance) {
         return (unsigned int)(50 + distance * 200);
+    }
+
+    void TurretRealHardwareInterface::clamp_command_values() {
+        if (pan_angle_degrees_ < pan_min_angle_degrees_) {
+            pan_angle_degrees_ = pan_min_angle_degrees_;
+        } else if (pan_angle_degrees_ > pan_max_angle_degrees_) {
+            pan_angle_degrees_ = pan_max_angle_degrees_;
+        }
+
+        if (tilt_angle_degrees_ < tilt_min_angle_degrees_) {
+            tilt_angle_degrees_ = tilt_min_angle_degrees_;
+        } else if (tilt_angle_degrees_ > tilt_max_angle_degrees_) {
+            tilt_angle_degrees_ = tilt_max_angle_degrees_;
+        }
+
+        if (trigger_distance_ < trigger_min_distance_) {
+            trigger_distance_ = trigger_min_distance_;
+        } else if (trigger_distance_ > trigger_max_distance_) {
+            trigger_distance_ = trigger_max_distance_;
+        }
     }
 }
 

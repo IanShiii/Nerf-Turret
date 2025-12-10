@@ -22,7 +22,7 @@ namespace turret_controller {
             controller_interface::InterfaceConfiguration state_interface_configuration() const override;
 
         private:
-            double pan_angle_{0.0};
+            double pan_angle_{90.0};
             double tilt_angle_{0.0};
             bool flywheel_enabled_{false};
             std::atomic<double> trigger_distance_{0.0};

@@ -41,16 +41,32 @@ namespace turret_hardware {
             hardware_interface::return_type write([[maybe_unused]] const rclcpp::Time & time, [[maybe_unused]] const rclcpp::Duration & period) override;
 
         private:
+            // --------------------------------
+            // GPIO Pins
+            // --------------------------------
             int pan_servo_gpio_pin_;
             int tilt_servo_gpio_pin_;
             int trigger_servo_gpio_pin_;
             int flywheel_in1_gpio_pin_;
             int flywheel_in2_gpio_pin_;
 
-            double pan_angle_;
-            double tilt_angle_;
-            double trigger_distance_;
-            double flywheel_enabled_;
+            // --------------------------------
+            // Software Limits
+            // --------------------------------
+            double pan_min_angle_degrees_;
+            double pan_max_angle_degrees_;
+            double tilt_min_angle_degrees_;
+            double tilt_max_angle_degrees_;
+            double trigger_min_distance_;
+            double trigger_max_distance_;
+
+            // --------------------------------
+            // Targets
+            // --------------------------------
+            double pan_angle_degrees_{90};
+            double tilt_angle_degrees_{0};
+            double trigger_distance_{0};
+            double flywheel_enabled_{0};
 
             /**
              * @brief Converts an angle in degrees to a PWM value.
@@ -63,5 +79,10 @@ namespace turret_hardware {
              * @param distance [0, 1]
              */
             unsigned int distance_to_pwm(double distance);
+
+            /**
+             * @brief Clamps command values to their respective min/max ranges.
+             */
+            void clamp_command_values();
     };
 }

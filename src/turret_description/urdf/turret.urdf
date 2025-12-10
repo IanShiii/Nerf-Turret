@@ -9,24 +9,24 @@
     <joint name="pan_joint" type="revolute">
         <parent link="base_link"/>
         <child link="pan_link"/>
-        <limit lower="0.0" upper="180.0" effort="1.0" velocity="45.0"/>
+        <limit lower="0.0" upper="180.0" effort="0.0" velocity="0.0"/>
     </joint>
 
     <joint name="tilt_joint" type="revolute">
         <parent link="pan_link"/>
         <child link="tilt_link"/>
-        <limit lower="60.0" upper="120.0" effort="1.0" velocity="45.0"/>
+        <limit lower="90.0" upper="120.0" effort="0.0" velocity="0.0"/>
     </joint>
 
-    <joint name="trigger_joint" type="revolute">
+    <joint name="trigger_joint" type="prismatic">
         <parent link="tilt_link"/>
         <child link="trigger_link"/>
-        <limit lower="0.0" upper="180.0" effort="1.0" velocity="45.0"/>
+        <limit lower="0.0" upper="1.0" effort="0.0" velocity="0.0"/>
     </joint>
 
     <ros2_control name="turret_hardware_interface" type="system">
         <hardware>
-            <plugin>turret_hardware/TurretRealHardwareInterface</plugin>
+            <plugin>turret_hardware/TurretSimHardwareInterface</plugin>
         </hardware>
 
         <joint name="pan_joint">
